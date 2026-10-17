@@ -1,0 +1,75 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #17243b;
+  background: #f4f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.dashboard { max-width: 1250px; margin: auto; padding: 38px 28px; }
+.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font: 800 clamp(27px, 4vw, 39px) 'Manrope', sans-serif; letter-spacing: -1.3px; margin-bottom: 8px; }
+h2 { font: 700 21px 'Manrope', sans-serif; margin-bottom: 0; }
+h3 { font-size: 16px; }
+.subtitle, .muted { color: #748198; }
+.subtitle { margin-bottom: 0; }
+.eyebrow { color: #3776df; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 10px; }
+.connection { white-space: nowrap; padding: 10px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; background: white; border: 1px solid #e1e8f1; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; background: #d97706; }
+.online .dot { background: #16a36a; }
+.offline .dot { background: #dc5454; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 22px; }
+.stat-card, .panel { background: white; border: 1px solid #e6ebf2; border-radius: 16px; box-shadow: 0 4px 18px #20385b08; }
+.stat-card { padding: 22px; }
+.stat-card p { font-size: 13px; margin-bottom: 14px; }
+.stat-card h2 { font-size: 31px; margin-bottom: 9px; }
+.stat-card small { color: #8994a7; font-size: 11px; }
+
+.panel { padding: 25px; margin-bottom: 20px; }
+.panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 22px; }
+.panel-heading .eyebrow { margin-bottom: 7px; }
+.arrival-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; }
+label { display: grid; gap: 8px; font-size: 13px; font-weight: 600; }
+input, select { width: 100%; border: 1px solid #dce3ee; border-radius: 9px; padding: 12px; color: #17243b; background: white; outline-color: #3776df; }
+button { border: 0; border-radius: 9px; padding: 12px 18px; color: white; background: #326de6; font-weight: 700; transition: background .15s; }
+button:hover { background: #2457c2; }
+button:disabled { opacity: .6; cursor: wait; }
+button.secondary { background: #eef3ff; color: #326de6; }
+.helper { font-size: 12px; margin: 17px 0 0; }
+.notice { background: #fff4e6; color: #92551c; border: 1px solid #f3d5ac; border-radius: 10px; padding: 13px 16px; margin-bottom: 20px; font-size: 13px; }
+.empty { padding: 28px; text-align: center; background: #f8faff; border-radius: 12px; color: #748198; }
+.empty h3 { color: #17243b; margin-bottom: 8px; }
+.empty p { margin-bottom: 0; font-size: 13px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+th { background: #f7f9fc; color: #748198; font-size: 11px; text-transform: uppercase; letter-spacing: .7px; }
+th, td { padding: 14px 16px; border-bottom: 1px solid #edf0f5; }
+tbody tr:last-child td { border-bottom: 0; }
+footer { display: flex; justify-content: space-between; gap: 12px; color: #8a95a7; font-size: 11px; padding: 12px 3px; }
+
+@media (max-width: 850px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .topbar { flex-direction: column; }
+}
+@media (max-width: 560px) {
+  .dashboard { padding: 24px 14px; }
+  .stats-grid { gap: 10px; }
+  .stat-card { padding: 15px; }
+  .stat-card h2 { font-size: 25px; }
+  .panel { padding: 17px; }
+  .arrival-form { grid-template-columns: 1fr; }
+  .panel-heading { align-items: flex-start; }
+  footer { flex-direction: column; }
+}

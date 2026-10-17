@@ -1,0 +1,9 @@
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+hospitalstats/
+.env
+.streamlit/secrets.toml
+backend/incoming_counts.db

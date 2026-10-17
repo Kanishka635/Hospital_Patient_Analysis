@@ -1,0 +1,3 @@
+Method,MAE,RMSE
+7-day Moving Average,7.319,9.192
+Simple Exponential Smoothing,7.163,8.809

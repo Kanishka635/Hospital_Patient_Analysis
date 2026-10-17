@@ -1,0 +1,61 @@
+# Hospital Patient Arrival Analysis
+
+## Project data
+- Dataset: synthetic_hospital_arrivals.csv
+- Period: 1 January 2025 to 31 December 2025
+- Number of days: 365
+- Data type: Simulated hospital arrivals, not real hospital records
+
+## Descriptive statistics
+- Mean daily arrivals: 44.98
+- Standard deviation: 9.31
+- Minimum: 21
+- Median: 45
+- Maximum: 69
+
+## Weekday vs weekend comparison
+- Weekday count: 261 days
+- Weekday mean: 48.93 patients/day
+- Weekend count: 104 days
+- Weekend mean: 35.05 patients/day
+- Difference in means: approximately 13.88 patients/day
+
+## Poisson probability analysis
+- Average arrival rate (lambda): 44.98
+- Probability of exactly 45 arrivals: 5.94%
+- Probability of more than 50 arrivals: 20.27%
+- Probability of fewer than 40 arrivals: 20.94%
+
+## Hypothesis testing
+- Test: Welch's independent-samples t-test
+- Null hypothesis: Weekday and weekend mean arrivals are equal
+- Alternative hypothesis: Weekday and weekend mean arrivals differ
+- Significance level: 0.05
+- t-statistic: 18.7394
+- Decision: Reject the null hypothesis
+- Interpretation: A statistically significant difference was found in this simulated dataset.
+
+## Graph
+- weekday_weekend_comparison.png
+
+## Limitation
+The dataset was generated for educational purposes. Results demonstrate statistical methods and should not be presented as findings from a real hospital.
+
+
+### Forecast Method Comparison
+
+Two forecasting methods were compared using the same 65-day test dataset, after training on the first 300 days.
+
+| Method | MAE | RMSE |
+|---|---:|---:|
+| 7-day Moving Average | 7.319 | 9.192 |
+| Simple Exponential Smoothing | 7.163 | 8.809 |
+
+**Conclusion:** Simple Exponential Smoothing performed slightly better than the 7-day Moving Average because it achieved lower MAE and RMSE values. Its MAE was approximately 7.16 patients per day.
+
+**Evaluation method:** Rolling one-day-ahead forecasting, using observed arrivals to update predictions for subsequent days.
+
+**Data limitation:** The dataset is simulated and was created for educational demonstration. The findings should not be interpreted as real hospital arrival patterns.
+
+**Output file:** `forecast_method_comparison.csv`
+
