@@ -93,12 +93,13 @@ c3.metric("Highest Daily Arrivals", maximum)
 c4.metric("Lowest Daily Arrivals", minimum)
 
 # ---------------- TABS ----------------
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Daily Trends",
     "Weekday vs Weekend",
     "Probability",
     "Hypothesis Test",
-    "Forecasting"
+    "Forecasting",
+    "Distribution & Skewness"
 ])
 
 # ---------------- TAB 1 ----------------
@@ -315,9 +316,113 @@ with tab5:
         st.pyplot(fig)
         plt.close(fig)
 
-# ---------------- FOOTER ----------------
-st.divider()
-st.caption(
-    "Academic demonstration only. The current dataset is simulated, "
-    "not real hospital data. Forecasts are not clinical decisions."
-)
+
+# ---------------- TAB 6 ----------------
+with tab6:
+    st.subheader("Distribution of Patient Arrivals")
+    st.write(
+        "Explore the distribution, spread, and asymmetry "
+        "of daily patient arrivals in the selected date range."
+    )
+
+    arrivals = filtered["arrivals"].dropna()
+
+    if len(arrivals) >= 3:
+        # HISTOGRAM
+        st.markdown("### 1. Histogram")
+
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.hist(
+            arrivals,
+            bins="auto",
+            edgecolor="black",
+            alpha=0.8
+        )
+        ax.set_xlabel("Daily Patient Arrivals")
+        ax.set_ylabel("Frequency (Number of Days)")
+        ax.set_title("Distribution of Daily Patient Arrivals")
+        ax.grid(axis="y", alpha=0.25)
+        fig.tight_layout()
+        st.pyplot(fig)
+        plt.close(fig)
+
+        st.caption(
+            "Each bar shows how many days fall within a "
+            "particular range of patient-arrival counts."
+        )
+
+        # BOX PLOT
+        st.markdown("### 2. Box Plot")
+
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.boxplot(
+            arrivals,
+            vert=False,
+            patch_artist=True
+        )
+        ax.set_xlabel("Daily Patient Arrivals")
+        ax.set_title("Spread and Potential Outliers")
+        ax.grid(axis="x", alpha=0.25)
+        fig.tight_layout()
+        st.pyplot(fig)
+        plt.close(fig)
+
+        q1 = arrivals.quantile(0.25)
+        median = arrivals.median()
+        q3 = arrivals.quantile(0.75)
+        iqr = q3 - q1
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("First Quartile (Q1)", f"{q1:.2f}")
+        c2.metric("Median", f"{median:.2f}")
+        c3.metric("Third Quartile (Q3)", f"{q3:.2f}")
+
+        st.write(f"**Interquartile Range (IQR):** {iqr:.2f}")
+
+        st.caption(
+            "The box covers the middle 50% of observations. "
+            "Points beyond the whiskers may be potential outliers; "
+            "they are not automatically errors."
+        )
+
+        # SKEWNESS
+        st.markdown("### 3. Skewness Analysis")
+
+        skewness = arrivals.skew()
+
+        st.metric("Skewness", f"{skewness:.4f}")
+
+        if pd.isna(skewness):
+            st.info(
+                "Skewness cannot be interpreted for constant "
+                "or unsuitable data."
+            )
+        elif skewness > 0.5:
+            st.info(
+                "The distribution is right-skewed: it has a "
+                "longer tail toward higher arrival counts."
+            )
+        elif skewness < -0.5:
+            st.info(
+                "The distribution is left-skewed: it has a "
+                "longer tail toward lower arrival counts."
+            )
+        else:
+            st.info(
+                "The distribution is approximately symmetric "
+                "under the usual practical skewness rule."
+            )
+
+        st.write(
+            "**Interpretation guide:** Values near zero indicate "
+            "little asymmetry. Positive values indicate right "
+            "skewness, while negative values indicate left skewness. "
+            "The ±0.5 thresholds are practical guidelines, not "
+            "formal statistical tests."
+        )
+
+    else:
+        st.warning(
+            "Select a date range containing at least three "
+            "valid daily arrival observations."
+        )
