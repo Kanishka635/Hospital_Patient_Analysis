@@ -3,3 +3,7 @@ numpy
 pandas
 matplotlib
 scipy
+scikit-learn
+fastapi
+uvicorn[standard]
+statsmodels
