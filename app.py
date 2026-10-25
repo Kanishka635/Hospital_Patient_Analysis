@@ -215,6 +215,7 @@ with st.sidebar:
             "Sampling & CLT",
             "ANOVA Test",
             "Least-Squares Curve Fitting",
+	    "Live Patient Arrivals",
             
             
         ],
@@ -1152,4 +1153,102 @@ elif page == "Least-Squares Curve Fitting":
         st.caption(
             "Least squares describes the linear trend"
         )
+
+
+
+# ---------------- PAGE: LIVE PATIENT ARRIVALS ----------------
+elif page == "Live Patient Arrivals":
+    import json
+    from streamlit_autorefresh import st_autorefresh
+    from urllib.request import urlopen
+    from urllib.error import URLError, HTTPError
+
+    st.subheader("Live Patient Arrivals")
+    st_autorefresh(interval=5000, key="live_arrivals_refresh")
+    st.write(
+        "View patient-arrival records received by the FastAPI backend. "
+        "This page is separate from the historical statistical analysis."
+    )
+
+    if st.button("Refresh live data"):
+        st.rerun()
+
+    api_url = "http://127.0.0.1:8000/api/v1/arrivals"
+    summary_url = "http://127.0.0.1:8000/api/v1/summary"
+
+    try:
+        with urlopen(api_url, timeout=5) as response:
+            result = json.loads(response.read().decode("utf-8"))
+
+        records = result.get("records", [])
+
+        if not records:
+            st.info(
+                "The API is connected, but no arrival records were found. "
+                "Start the simulation to send records."
+            )
+        else:
+            st.success(f"Connected to API — {len(records)} records retrieved.")
+
+            departments = sorted({
+                record.get("department", "Unknown")
+                for record in records
+            })
+            selected_department = st.selectbox(
+                "Filter by department",
+                ["All departments"] + departments
+            )
+
+            if selected_department != "All departments":
+                records = [
+                    record for record in records
+                    if record.get("department") == selected_department
+                ]
+
+            if records:
+                counts = [
+                    int(record.get("patient_count", 0))
+                    for record in records
+                ]
+
+                col1, col2, col3 = st.columns(3)
+                col1.metric("Records shown", len(records))
+                col2.metric("Total patients in records", sum(counts))
+                col3.metric("Average per record", f"{sum(counts) / len(counts):.2f}")
+
+                st.markdown("### Latest arrival records")
+                live_df = pd.DataFrame(records)
+
+                if "period_start" in live_df.columns:
+                    live_df["period_start"] = pd.to_datetime(
+                        live_df["period_start"], errors="coerce"
+                    )
+
+                st.dataframe(live_df, use_container_width=True)
+
+                if "period_start" in live_df.columns and "patient_count" in live_df.columns:
+                    chart_df = live_df.dropna(subset=["period_start"]).sort_values(
+                        "period_start"
+                    )
+                    if not chart_df.empty:
+                        st.markdown("### Patient counts over time")
+                        chart_df = chart_df.set_index("period_start")
+                        st.line_chart(chart_df["patient_count"])
+
+                st.caption(
+                    "These are incoming API records. The figures above summarize "
+                    "the records currently returned by the API, not necessarily "
+                    "unique patients."
+                )
+
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
+        st.error(
+            "Could not connect to the FastAPI backend. Make sure the backend "
+            "is running at http://127.0.0.1:8000."
+        )
+        st.caption(f"Connection detail: {error}")
+    except (json.JSONDecodeError, ValueError, TypeError) as error:
+        st.error("The API returned data that could not be displayed.")
+        st.caption(f"Data detail: {error}")
+
 
